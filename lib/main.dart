@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -41,18 +42,24 @@ class MyHomePage extends StatelessWidget {
     var pair = appState.current;                
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('I\'m trying to make the app prettier! '),
-          BigCard(pair: pair),    
+      body: Center(
+        child: Column(
+          mainAxisAlignment:MainAxisAlignment.center,
+          children: [
+            // Text('I\'m trying to make the app prettier! '),
+            BigCard(pair: pair),    
 
-          // ↓ Add this.
-          ElevatedButton(onPressed: () {
-            // print('Button pressed!');
-            appState.getNext();
-          }, child: Text('Next'))
-        ],
-
+            // takes space and doesn't render anything by itself. It's commonly used to create visual "gaps".
+            SizedBox(height: 10),
+        
+            // ↓ Add this.
+            ElevatedButton(onPressed: () {
+              // print('Button pressed!');
+              appState.getNext();
+            }, child: Text('Next'))
+          ],
+        
+        ),
       ),
     );
   }
@@ -78,7 +85,8 @@ class BigCard extends StatelessWidget {
       color: theme.colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Text(pair.asLowerCase, style: style,),
+        child: Text(pair.asLowerCase, style: style, semanticsLabel: "${pair.first} ${pair.second}",),
+        
       ),
     );
   }
