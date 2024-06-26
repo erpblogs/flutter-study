@@ -28,12 +28,29 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
+  var favorites = <WordPair>[];
 
   void getNext() {
     current = WordPair.random();
     notifyListeners();
   }
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+      print("removed");
+    } else {
+      favorites.add(current);
+      print("added!");
+    }
+    
+      print(favorites);
+
+    notifyListeners();
+  }
+
 }
+
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -52,11 +69,21 @@ class MyHomePage extends StatelessWidget {
             // takes space and doesn't render anything by itself. It's commonly used to create visual "gaps".
             SizedBox(height: 10),
         
-            // ↓ Add this.
-            ElevatedButton(onPressed: () {
-              // print('Button pressed!');
-              appState.getNext();
-            }, child: Text('Next'))
+            // like button
+            Row(
+              mainAxisSize: MainAxisSize.min, 
+              children: [
+                ElevatedButton(onPressed: () {
+                  // print('Button pressed!');
+                  appState.toggleFavorite();
+                }, child: Text('Like')),
+                // ↓ next btn
+                ElevatedButton(onPressed: () {
+                  // print('Button pressed!');
+                  appState.getNext();
+                }, child: Text('Next')),
+              ],
+            )
           ],
         
         ),
