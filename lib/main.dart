@@ -40,6 +40,11 @@ class MyHomePage extends StatelessWidget {
           Text('A random idea for my first mobile app! '),
           Text('I\'m trying to add new text line! '),
           Text(appState.current.asLowerCase),
+
+          // ↓ Add this.
+          ElevatedButton(onPressed: () {
+            print('Button pressed!');
+          }, child: Text('Next'))
         ],
       ),
     );
