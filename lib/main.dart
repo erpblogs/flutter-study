@@ -45,8 +45,6 @@ class MyAppState extends ChangeNotifier {
       print("added!");
     }
 
-    print(favorites);
-
     notifyListeners();
   }
 }
@@ -67,47 +65,94 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
 
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-            child: NavigationRail(
-              extended: false,
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Favorites'),
-                ),
-              ],
-              selectedIndex: selectedIndex,
-              onDestinationSelected: (value) {
-                // print('selected: $value');
+    return LayoutBuilder(builder: (context, constrains) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                // extended: true,
+                extended: constrains.maxWidth >= 600,
+                // Set the background color here
+                backgroundColor: Color.fromARGB(255, 8, 240, 240),
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  // print('selected: $value');
 
-                setState(() {
-                  selectedIndex = value;
-                });
-              },
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
+              ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              // child: GeneratorPage(),
-              child: page, // switches between our GeneratorPage and the placeholder, that will soon become the Favorites page.
+            Expanded(
+              child: Container(
+                // color: Theme.of(context).colorScheme.primary,
+                // child: GeneratorPage(),
+                child: page,
+                // switches between our GeneratorPage and the placeholder, that will soon become the Favorites page.
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var favorites = appState.favorites;
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have ${appState.favorites.length} favorites:'),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            favorites.isEmpty
+                ? Text('No favorites yet.')
+                : BigCardList(favorites: favorites),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class BigCardList extends StatelessWidget {
+  const BigCardList({
+    super.key,
+    required this.favorites,
+  });
+
+  final List<WordPair> favorites;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: favorites.map((pair) => BigCard(pair: pair)).toList(),
     );
   }
 }
@@ -184,6 +229,7 @@ class BigCard extends StatelessWidget {
 
     return Card(
       color: theme.colorScheme.primary,
+      margin: EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Text(
